@@ -34,9 +34,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/payment-details',[PaymentController::class, 'getPaymentDetails']);
     Route::post('/make-order',[OrderController::class, 'makeOrder']);
     Route::post('/list-order',[OrderController::class, 'list']);
+    Route::post('/add-to-cart',[CartController::class, 'add']);
+    Route::post('/list-cart',[CartController::class, 'list']);
 });
 Route::post('/home',[HomeController::class, 'HomeData']);
 Route::post('/search',[SearchController::class, 'list']);
 Route::post('/product',[ProductController::class, 'view']);
-Route::post('/add-to-cart',[CartController::class, 'add']);
-Route::post('/list-cart',[CartController::class, 'list']);

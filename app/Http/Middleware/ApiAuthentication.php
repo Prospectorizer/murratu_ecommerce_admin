@@ -19,6 +19,8 @@ class ApiAuthentication
     public function handle(Request $request, Closure $next, string ...$guards): Response
     {   
         Log::warning($request);
+        Log::warning("Inside api auth Middleware");
+        // response()->json(['status'=>false,'message':'Invalid Access Token"])
         return $next($request);
     }
 }

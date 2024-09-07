@@ -6,13 +6,15 @@ use Illuminate\Support\Facades\Log;
 use App\Models\Cart;
 use App\Models\CartItems;
 use App\Models\product;
+use App\Repositories\PersonalAccessRepository;
 
 class CartRepository
 {
     public function add($parameters){
         $product = (new product())->where(['product_id' => $parameters['product_id']])->get()->first();
 
-        $cart_details = optional((new Cart())->where(['customer_id'=>1])->get()->first())->toArray();
+        $customerIdentity = (new PersonalAccessRepository())->getCustomerIdentity();
+        $cart_details = optional((new Cart())->where(['customer_id'=>$customerIdentity->id])->get()->first())->toArray();
         $cart_id = '';
 
         if($cart_details){
@@ -23,7 +25,7 @@ class CartRepository
         }else{
             $cart_id = $this->generateCartID();
             $cart = [];
-            $cart['customer_id'] = 1;
+            $cart['customer_id'] = $customerIdentity->id;
             $cart['amount'] = $product['mrp'];
             $cart['net_amount'] = $product['mrp'];
             $cart['cart_id'] = $cart_id;
@@ -33,7 +35,7 @@ class CartRepository
 
         $cartItems = [];
         $cartItems['cart_id'] = $cart_id;
-        $cartItems['customer_id'] = 1;
+        $cartItems['customer_id'] = $customerIdentity->id;
         $cartItems['product_id'] = $product['product_id'];
         $cartItems['mrp'] = $product['mrp'];
         $cartItems['category_code'] = $product['category_code'];
@@ -54,7 +56,8 @@ class CartRepository
     }
 
     public function list(){
-        $cartItems = (new CartItems())->where(['customer_id'=>1])->get();
+        $customerIdentity = (new PersonalAccessRepository())->getCustomerIdentity();
+        $cartItems = (new CartItems())->where(['customer_id'=>$customerIdentity->id])->get();
         return $cartItems;
     }
 
